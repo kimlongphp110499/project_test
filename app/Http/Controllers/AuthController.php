@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-use app\Models\User;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -19,9 +19,10 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-        if (! $token = auth()->attempt($validator->validated())) {
+        if (!$token = auth()->attempt($validator->validated())) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
         return $this->createNewToken($token);
     }
 
@@ -39,7 +40,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => $request->password,
+            'password' => bcrypt($request->password),
         ]);
 
         return response()->json([
